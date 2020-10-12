@@ -5,20 +5,22 @@ import java.util.Scanner;
 public class Main {
 
 	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
 
-		Scanner scanner = new Scanner(System.in);	
-		System.out.print("명령어 입력: ");
-		
-		String command = scanner.nextLine();
-
-		if (command.equals("text add")) {
-			System.out.println("텍스트 추가");
-		} else if (command.equals("text list")) {
-			System.out.println("텍스트 리스트");
-		} else {
-			System.out.println("존재하지 않음");
+		while (true) {
+			System.out.print("명령어 입력: ");
+			String com = scanner.nextLine();
+			if (com.equals("article list")) {
+				System.out.println("== 게시물 리스트 ==");
+			} else if (com.equals("article add")) {
+				System.out.println("== 게시물 추가 ==");
+			} else if (com.equals("system exit")) {
+				System.out.println("== 프로그램 종료 ==");
+				break;
+			} else
+				System.out.println("== 존재하지 않는 명령어 ==");
 		}
-
+		scanner.close();
+		
 	}
-
 }
