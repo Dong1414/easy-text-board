@@ -8,9 +8,9 @@ public class Main {
 
 		int lastid = 0;
 
-		String article1_title = "";
-		String article1_body = "";
-		int article1_id = 0;
+		String[] article_title = new String[3];
+		String[] article_body = new String[3];
+		int[] article_id = new int[3];
 
 		String article2_title = "";
 		String article2_body = "";
@@ -32,15 +32,11 @@ public class Main {
 				System.out.printf("내용: ");
 				body = scanner.nextLine();
 
-				if (id == 1) {
-					article1_title = title;
-					article1_body = body;
-					article1_id = id;
-				} else if (id == 2) {
-					article2_title = title;
-					article2_body = body;
-					article2_id = id;
-				}
+				article_title[lastid] = title;
+				article_body[lastid] = body;
+				article_id[lastid] = id;
+				
+				
 				System.out.printf("%d번재 게시물 등록\n", id);
 				lastid = id;
 
@@ -55,23 +51,28 @@ public class Main {
 				System.out.println("번호 / 제목");
 				if (lastid >= 1) {
 
-					System.out.printf("%d / %s\n", article1_id, article1_title);
+					System.out.printf("%d / %s\n", article_id[0], article_title[0]);
 				}
-				if (lastid >= 2) {
+							}
+			
+			else if (com.startsWith("article detail ")) {
 
-					System.out.printf("%d / %s\n", article2_id, article2_title);
+				int inputedid = Integer.parseInt(com.split(" ")[2]);
+				
+				if(lastid == 0){
+					System.out.printf("%d번째 게시물 존재하지 않음\n",inputedid);
+					continue;
+				}
+				else if(lastid >= 1) {
+				
+				
+				System.out.println("== 게시물 상세 ==");
+				System.out.printf("번호: %d\n",article_id[inputedid-1]);
+				System.out.printf("제목: %s\n",article_title[inputedid-1]);
+				System.out.printf("내용: %s\n",article_body[inputedid-1]);
 				}
 			}
-			else if (com.equals("article detail 1")) {
-				System.out.printf("번호: %d\n",article1_id);
-				System.out.printf("제목: %s\n",article1_title);
-				System.out.printf("내용: %s\n",article1_body);
-			}
-			else if (com.equals("article detail 2")) {
-				System.out.printf("번호: %d\n",article2_id);
-				System.out.printf("제목: %s\n",article2_title);
-				System.out.printf("내용: %s\n",article2_body);
-			}
+			
 			else if (com.equals("system exit")) {
 				System.out.println("프로그램 종료");
 				break;
