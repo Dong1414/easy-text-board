@@ -6,9 +6,5 @@ public class Article {
 	public String title;
 	public String body;
 
-	public Article(int setid, String settitle, String setbody) {
-		id = setid;
-		title = settitle;
-		body = setbody;
-	}
+	
 }
