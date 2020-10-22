@@ -6,6 +6,8 @@ import java.util.Scanner;
 
 public class App {
 
+	SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	Date time = new Date();
 	Article[] articles = new Article[3];
 	int lastid = 0;
 	int articlesSize = 0;
@@ -14,7 +16,7 @@ public class App {
 		return articlesSize;
 	}
 
-	public Article getArticle(int id) {
+	private Article getArticle(int id) {
 
 		int index = move(id);
 
@@ -25,12 +27,12 @@ public class App {
 		return articles[index];
 	}
 
-	public int move(int id) {
+	private int move(int id) {
 		if (articleSize() > 0) {
 			for (int i = 0; i < articleSize(); i++) {
 
 				if (articles[i].id == id) {
-						
+
 					return i;
 				}
 
@@ -39,7 +41,7 @@ public class App {
 		return -1;
 	}
 
-	public void remove(int id) {
+	private void remove(int id) {
 
 		int count = move(id);
 
@@ -59,11 +61,42 @@ public class App {
 			System.out.printf("%d번 글은 존재하지 않습니다.", id);
 	}
 
-	public void run() {
-		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date time = new Date();
+	private void add(int setid, String settitle, String setbody) {
 
-		int maxarticleCoutn = articles.length;
+		Article article = new Article();
+
+		article.id = setid;
+		article.title = settitle;
+		article.body = setbody;
+		article.regDate = format1.format(time);
+
+		System.out.printf("%d번 게시물이 생성되었습니다.\n", setid);
+
+		articles[articlesSize] = article;
+
+	}
+
+	private void Search(String input) {
+
+		int count = 0;
+
+		for (int i = articleSize() - 1; i >= 0; i--) {
+
+			if (articles[i].body.contains(input)) {
+
+				System.out.printf("번호 : %d\n", articles[i].id);
+				System.out.printf("제목 : %s\n", articles[i].title);
+				System.out.printf("내용 : %s\n", articles[i].body);
+				System.out.printf("생성 시간 : %s\n\n", articles[i].regDate);
+				count++;
+			}
+		}
+		if (count == 0) {
+			System.out.printf("%s가 포함된 게시물은 존재하지 않습니다.\n", input);
+		}
+	}
+
+	public void run() {
 
 		Scanner scan = new Scanner(System.in);
 
@@ -73,10 +106,14 @@ public class App {
 
 			if (com.equals("article add")) {
 
-				if (articleSize() >= maxarticleCoutn) {
-					System.out.println("더 이상 추가할 수 없습니다.");
-					continue;
+				if (articleSize() >= articles.length) {
+					Article[] newarticles = new Article[articles.length * 2];
+					for (int i = 0; i < articles.length; i++) {
+						newarticles[i] = articles[i];
+					}
+					articles = newarticles;
 				}
+
 				System.out.printf("제목: ");
 				String title = scan.nextLine();
 
@@ -86,19 +123,13 @@ public class App {
 				int id = lastid + 1;
 				lastid = id;
 
-				Article article = new Article();
+				add(id, title, body);
 
-				article.id = id;
-				article.title = title;
-				article.body = body;
-				article.regDate = format1.format(time);
-
-				System.out.printf("%d번 게시물이 생성되었습니다.\n", id);
-
-				articles[articlesSize] = article;
 				articlesSize++;
 
-			} else if (com.startsWith("article delete ")) {
+			}
+
+			else if (com.startsWith("article delete ")) {
 				int inputid = Integer.parseInt(com.split(" ")[2]);
 				Article article = getArticle(inputid);
 
@@ -110,30 +141,13 @@ public class App {
 
 			} else if (com.startsWith("article search ")) {
 				String inputString = com.split(" ")[2];
-
 				System.out.printf("== %s가 포함된 게시물 ==\n", inputString);
-				int count = 0;
+
 				if (articleSize() <= 0) {
 					System.out.println("== 게시물이 존재하지 않습니다. ==");
-					continue;
-				}
 
-				else
-					for (int i = articleSize() - 1; i >= 0; i--) {
-
-						if (articles[i].body.contains(inputString)) {
-
-							System.out.printf("번호 : %d\n", articles[i].id);
-							System.out.printf("제목 : %s\n", articles[i].title);
-							System.out.printf("내용 : %s\n", articles[i].body);
-							System.out.printf("생성 시간 : %s\n\n", articles[i].regDate);
-							count++;
-						}
-
-					}
-				if (count == 0) {
-					System.out.printf("%s가 포함된 게시물은 존재하지 않습니다.\n", inputString);
-				}
+				} else
+					Search(inputString);
 
 			}
 
@@ -141,22 +155,21 @@ public class App {
 				int inputid = Integer.parseInt(com.split(" ")[2]);
 				Article article = getArticle(inputid);
 
-				if(articleSize() <= 0) {
+				if (articleSize() <= 0) {
 					System.out.println("게시물이 존재하지 않습니다");
 					continue;
-				}
-				else if(article == null) {
-					System.out.printf("%d글이 존재하지 않습니다.\n",inputid);
+				} else if (article == null) {
+					System.out.printf("%d글이 존재하지 않습니다.\n", inputid);
 					continue;
 				}
-					System.out.printf("%d번 글 수정\n", inputid);
-					System.out.printf("새 제목: ");
-					article.title = scan.nextLine();
-					System.out.printf("새 내용: ");
-					article.body = scan.nextLine();
-					article.regDate = format1.format(time);
-					articles[move(inputid)] = article;
-				
+				System.out.printf("%d번 글 수정\n", inputid);
+				System.out.printf("새 제목: ");
+				article.title = scan.nextLine();
+				System.out.printf("새 내용: ");
+				article.body = scan.nextLine();
+				article.regDate = format1.format(time);
+				articles[move(inputid)] = article;
+
 			} else if (com.equals("article list")) {
 
 				if (articleSize() == 0) {
