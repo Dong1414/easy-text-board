@@ -8,9 +8,26 @@ public class App {
 
 	SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	Date time = new Date();
-	Article[] articles = new Article[3];
-	int lastid = 0;
-	int articlesSize = 0;
+	Article[] articles;
+	int lastid;
+	int articlesSize;
+
+	public App() {
+
+		articles = new Article[2];
+		lastid = 0;
+		articlesSize = 0;
+
+		for (int i = 0; i < articles.length + 1; i++) {
+			add(i + 1, i + 1 + "", i + 1 + "");
+			lastid++;
+			articlesSize++;
+			if (articleSize() == 32) {
+				break;
+			}
+		}
+
+	}
 
 	int articleSize() {
 		return articlesSize;
@@ -62,6 +79,13 @@ public class App {
 	}
 
 	private void add(int setid, String settitle, String setbody) {
+		if (articleSize() >= articles.length) {
+			Article[] newarticles = new Article[articles.length * 2];
+			for (int i = 0; i < articles.length; i++) {
+				newarticles[i] = articles[i];
+			}
+			articles = newarticles;
+		}
 
 		Article article = new Article();
 
@@ -105,14 +129,6 @@ public class App {
 			String com = scan.nextLine();
 
 			if (com.equals("article add")) {
-
-				if (articleSize() >= articles.length) {
-					Article[] newarticles = new Article[articles.length * 2];
-					for (int i = 0; i < articles.length; i++) {
-						newarticles[i] = articles[i];
-					}
-					articles = newarticles;
-				}
 
 				System.out.printf("제목: ");
 				String title = scan.nextLine();
@@ -170,20 +186,17 @@ public class App {
 				article.regDate = format1.format(time);
 				articles[move(inputid)] = article;
 
-			} else if (com.equals("article list")) {
-
-				if (articleSize() == 0) {
+			} else if (com.startsWith("article list ")) {
+				int inputid = Integer.parseInt(com.split(" ")[2]);
+				if (articleSize() == 0 || articleSize() / 10 + 1 < inputid) {
 					System.out.println("게시물이 존재하지 않습니다.");
 					continue;
 				}
+
 				System.out.println("== 게시물 리스트 ==");
 				System.out.println("번호 / 제목");
-				for (int i = articleSize() - 1; i >= 0; i--) {
 
-					Article article = articles[i];
-					System.out.printf("%d / %s\n", article.id, article.title);
-
-				}
+				getlist(inputid);
 
 			} else if (com.startsWith("article detail ")) {
 				int inputid = Integer.parseInt(com.split(" ")[2]);
@@ -212,4 +225,29 @@ public class App {
 		scan.close();
 	}
 
+	private void getlist(int inputid) {
+
+		int[] listid = new int[articleSize() / 10 + 1];
+
+		for (int i = 0; i < listid.length; i++) {
+			listid[i] = i + 1;
+		}
+		while (true) {
+			if (inputid == listid[inputid - 1]) {
+				int j = articleSize() - (inputid * 10);
+				for (int i = 1; i >= j; i--) {
+
+					Article article = articles[i];
+					System.out.printf("%d / %s\n", article.id, article.title);
+					if (j == 0)
+						break;
+
+				}
+				break;
+
+			}
+
+		}
+
+	}
 }
