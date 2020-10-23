@@ -100,20 +100,42 @@ public class App {
 
 	}
 
-	private void Search(String input) {
+	private void Search(String input, int page) {
 
 		int count = 0;
 
 		for (int i = articleSize() - 1; i >= 0; i--) {
 
 			if (articles[i].body.contains(input)) {
-
-				System.out.printf("번호 : %d\n", articles[i].id);
-				System.out.printf("제목 : %s\n", articles[i].title);
-				System.out.printf("내용 : %s\n", articles[i].body);
-				System.out.printf("생성 시간 : %s\n\n", articles[i].regDate);
 				count++;
 			}
+		}
+		Article[] searcharticles = new Article[count];
+		int j = 0;
+		for (int i = 0; i < articleSize(); i++) {
+
+			if (articles[i].body.contains(input)) {
+				searcharticles[j] = articles[i];
+				j++;
+			}
+		}
+		int inpage = 10;
+		int startPos = searcharticles.length-1;
+		
+		startPos -= (page - 1) * inpage;
+		
+		int endPos = startPos - (inpage - 1);
+		
+		if(endPos < 0)endPos=0;
+		if (startPos < 0) {
+			System.out.printf("%d 페이지는 존재하지 않습니다.",page);
+			return;
+		}
+		System.out.printf("== %d 페이지 ==\n",page);
+		for (int i = startPos; i >= endPos; i--) {
+			
+			System.out.printf("%d / %s\n", searcharticles[i].id,searcharticles[i].title);			
+		
 		}
 		if (count == 0) {
 			System.out.printf("%s가 포함된 게시물은 존재하지 않습니다.\n", input);
@@ -156,6 +178,7 @@ public class App {
 					remove(inputid);
 
 			} else if (com.startsWith("article search ")) {
+				int page = Integer.parseInt(com.split(" ")[3]);
 				String inputString = com.split(" ")[2];
 				System.out.printf("== %s가 포함된 게시물 ==\n", inputString);
 
@@ -163,7 +186,7 @@ public class App {
 					System.out.println("== 게시물이 존재하지 않습니다. ==");
 
 				} else
-					Search(inputString);
+					Search(inputString,page);
 
 			}
 
@@ -196,7 +219,23 @@ public class App {
 				System.out.println("== 게시물 리스트 ==");
 				System.out.println("번호 / 제목");
 
-				getlist(inputid);
+				int itemsInAPage = 10; // 표시할 범위 값
+				int startPos = articleSize() - 1; 
+				startPos -= (inputid - 1) * itemsInAPage;				
+				int endPos = startPos - (itemsInAPage - 1);
+				
+				if (endPos < 0) {
+					endPos = 0;
+				}
+				
+				if (startPos < 0) {
+					System.out.printf("%d 페이지는 존재하지 않습니다.",startPos);
+					continue;
+				}
+
+				for (int i = startPos; i >= endPos; i--) {
+					System.out.printf("%d / %s\n", articles[i].id, articles[i].title);
+				}
 
 			} else if (com.startsWith("article detail ")) {
 				int inputid = Integer.parseInt(com.split(" ")[2]);
@@ -225,29 +264,4 @@ public class App {
 		scan.close();
 	}
 
-	private void getlist(int inputid) {
-
-		int[] listid = new int[articleSize() / 10 + 1];
-
-		for (int i = 0; i < listid.length; i++) {
-			listid[i] = i + 1;
-		}
-		while (true) {
-			if (inputid == listid[inputid - 1]) {
-				int j = articleSize() - (inputid * 10);
-				for (int i = 1; i >= j; i--) {
-
-					Article article = articles[i];
-					System.out.printf("%d / %s\n", article.id, article.title);
-					if (j == 0)
-						break;
-
-				}
-				break;
-
-			}
-
-		}
-
-	}
 }
