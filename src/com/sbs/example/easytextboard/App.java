@@ -11,9 +11,13 @@ public class App {
 	Article[] articles;
 	int lastid;
 	int articlesSize;
+	Member[] members;
+	int memberid;
+	int membersSize;
+	int login = 0;
 
 	public App() {
-
+		
 		articles = new Article[2];
 		lastid = 0;
 		articlesSize = 0;
@@ -26,9 +30,16 @@ public class App {
 				break;
 			}
 		}
-
+		
+		members = new Member[2];
+		memberid = 0;
+		membersSize = 0;
 	}
 
+	int memberSize() {
+		return membersSize;
+	}
+	
 	int articleSize() {
 		return articlesSize;
 	}
@@ -100,6 +111,30 @@ public class App {
 
 	}
 
+	private void IdAdd(String setid, String setpass, String setname) {
+		if (memberSize() >= members.length) {
+			Member[] newmembers = new Member[members.length * 2];
+			for (int i = 0; i < members.length; i++) {
+				newmembers[i] = members[i];
+			}
+			members = newmembers;
+		}
+
+		Member member = new Member();
+
+		member.id = setid;
+		member.password = setpass;
+		member.name = setname;
+		
+
+	
+
+		members[membersSize] = member;
+		
+		System.out.printf("아이디 : %s\n비밀번호 : %s\n이름 : %s 가입이 완료되었습니다.\n", members[membersSize].id,members[membersSize].password,members[membersSize].name);
+		
+	}
+	
 	private void Search(String input, int page) {
 
 		int count = 0;
@@ -160,15 +195,62 @@ public class App {
 
 				int id = lastid + 1;
 				lastid = id;
-
+				
 				add(id, title, body);
 
 				articlesSize++;
 
+			}else if(com.equals("member join")){
+				
+				System.out.printf("로그인 아이디 : ");
+				String member = scan.nextLine();
+				
+				System.out.printf("로그인 비번 : ");
+				String pass = scan.nextLine();
+				
+				System.out.printf("이름 : ");
+				String name = scan.nextLine();
+				int id = memberid +1;
+				memberid = id;
+			
+				IdAdd(member, pass, name);
+				
+				membersSize++;
+				
+				
+			}
+			else if(com.equals("member login")){
+				System.out.printf("로그인 아이디 : ");
+				String member = scan.nextLine();
+				
+				System.out.printf("로그인 비번 : ");
+				String pass = scan.nextLine();
+		
+				for(int i = 0; i < members.length; i++) {
+					if(members[i].id.equals(member)){
+						if(members[i].password.equals(pass)) {
+							System.out.printf("%s님이 환영합니다.\n",members[i].name);
+							login = i + 1;
+							break;
+						}else System.out.println("비밀번호가 일치하지 않습니다.");
+					}
+					if(i == members.length-1) {System.out.println("아이디가 존재하지 않습니다.");}
+				}
+			}
+			else if(com.equals("member logout")) {
+				if(login > 0) {
+					System.out.printf("%s님이 로그아웃\n",members[login-1].name);
+					login = 0;
+				}else System.out.println("로그인이 되어있지 않습니다.");
 			}
 
-			else if (com.startsWith("article delete ")) {
-				int inputid = Integer.parseInt(com.split(" ")[2]);
+			else if (com.startsWith("article delete ")) {				
+				
+				
+				int inputid = Integer.parseInt(com.split(" ")[2]);										
+				
+				
+				
 				Article article = getArticle(inputid);
 
 				if (article == null) {
@@ -178,8 +260,19 @@ public class App {
 					remove(inputid);
 
 			} else if (com.startsWith("article search ")) {
-				int page = Integer.parseInt(com.split(" ")[3]);
-				String inputString = com.split(" ")[2];
+				String[] commandBits = com.split(" ");
+
+				String inputString = commandBits[2];
+
+				int page = 1;
+
+				if (commandBits.length >= 4) {
+					page = Integer.parseInt(commandBits[3]);
+				}
+
+				if (page <= 1) {
+					page = 1;
+				}
 				System.out.printf("== %s가 포함된 게시물 ==\n", inputString);
 
 				if (articleSize() <= 0) {
@@ -208,7 +301,7 @@ public class App {
 				article.body = scan.nextLine();
 				article.regDate = format1.format(time);
 				articles[move(inputid)] = article;
-
+				
 			} else if (com.startsWith("article list ")) {
 				int inputid = Integer.parseInt(com.split(" ")[2]);
 				if (articleSize() == 0 || articleSize() / 10 + 1 < inputid) {
