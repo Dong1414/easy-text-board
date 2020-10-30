@@ -30,8 +30,7 @@ public class ArticleController {
 		article.body = body;
 
 		articles.add(article);
-		lastid = article.id;
-		System.out.println(articles.size());
+		lastid = article.id;		
 		return article.id;
 	}
 
