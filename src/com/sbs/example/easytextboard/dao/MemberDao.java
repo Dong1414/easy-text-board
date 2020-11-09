@@ -7,16 +7,16 @@ import com.sbs.example.easytextboard.dto.Member;
 
 public class MemberDao {
 	List<Member> members;
-	int memberid;
+	int lastId;
 	
 
 	public MemberDao() {
-		memberid = 0;
+		lastId = 0;
 	
 		members = new ArrayList<Member>();
 
-		for (int i = 0; i < 3; i++) {
-			add("user" + (i + 1), "user" + (i + 1), "유저" + (i + 1));
+		for (int i = 1; i < 3; i++) {
+			add(i+"",i+"",i+"");
 
 		}
 
@@ -24,7 +24,7 @@ public class MemberDao {
 	
 	public Member getMemberByLoginId(String loginId) {
 		for (Member member : members) {
-			if (member.id.equals(loginId)) {
+			if (member.loginId.equals(loginId)) {
 				return member;
 			}
 		}
@@ -35,7 +35,7 @@ public class MemberDao {
 
 	public boolean isExistsLoginId(String loginId) {
 		for (Member member : members) {
-			if (member.id.equals(loginId)) {
+			if (member.loginId.equals(loginId)) {
 				return true;
 			}
 		}
@@ -46,39 +46,39 @@ public class MemberDao {
 	public int add(String id, String password, String name) {
 
 		Member member = new Member();
-		member.num = memberid + 1;
-		member.id = id;
-		member.password = password;
+		member.id = lastId + 1;
+		member.loginId = id;
+		member.loginPw = password;
 		member.name = name;
 
 		members.add(member);
-		memberid = member.num;
-		return member.num;
+		lastId = member.id;
+		return member.id;
 	}
 
 	public boolean isJoinableLoginId(String id) {
 
 		for (Member member : members) {
-			if (member.id.equals(id)) {
+			if (member.loginId.equals(id)) {
 				return false;
 			}
 		}
 
 		return true;
 	}
-	public int getmemberid() {
+	public int getLastId() {
 		
-		return memberid;
+		return lastId;
 	}
 	
-	public int getmembersSize() {		
+	public int getMembersSize() {		
 		return members.size();
 	}
 	
-	public List<Member> getmembers() {
+	public List<Member> getMembers() {
 		return members;
 	}
-	public Member getmemberIndex(int input) {
+	public Member getMemberIndex(int input) {
 		return members.get(input);
 	}
 

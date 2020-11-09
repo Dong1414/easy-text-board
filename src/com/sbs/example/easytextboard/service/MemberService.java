@@ -7,7 +7,7 @@ import com.sbs.example.easytextboard.dao.MemberDao;
 import com.sbs.example.easytextboard.dto.Member;
 
 public class MemberService {
-	MemberDao memberdao = Container.memberdao;
+	MemberDao memberdao = Container.memberDao;
 	
 	public boolean isJoinableLoginId(String id) {
 
@@ -24,23 +24,23 @@ public class MemberService {
 		return memberdao.getMemberByLoginId(loginId);
 	}
 
-	public int getmembersSize() {
+	public int getMembersSize() {
 		
-		return memberdao.getmembersSize();
+		return memberdao.getMembersSize();
 	}
 
-	public Member getmemberIndex(int i) {
+	public Member getMemberIndex(int i) {
 		
-		return memberdao.getmemberIndex(i);
+		return memberdao.getMemberIndex(i);
 	}
 
 	public List<Member> getmembers() {
 
-		return memberdao.getmembers();
+		return memberdao.getMembers();
 	}
 
 	public int getmemberid() {		
-		return memberdao.getmemberid();
+		return memberdao.getLastId();
 	}
 	
 

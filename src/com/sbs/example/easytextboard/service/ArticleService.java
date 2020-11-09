@@ -1,33 +1,45 @@
 package com.sbs.example.easytextboard.service;
 
+import java.util.List;
+
 import com.sbs.example.easytextboard.container.Container;
 import com.sbs.example.easytextboard.dao.ArticleDao;
 import com.sbs.example.easytextboard.dto.Article;
+import com.sbs.example.easytextboard.dto.Board;
 
 public class ArticleService {
-
-	ArticleDao articledao = Container.articledao;
 	
-	public void add(String title, String body, String memberid) {
-		articledao.add(title, body, memberid);		
+	private ArticleDao articledao;
+	
+	
+	public ArticleService() {
+		articledao = Container.articleDao;
+		
+	
+		
+		
+	}
+	
+	public int add(String title, String body, String memberId,int boardId) {
+		return articledao.add(title, body, memberId,boardId);		
 	}
 
-	public int getlastid() {
+	public int getLastId() {
  
-		return articledao.getlastid();
+		return articledao.getLastId();
 	}
 
-	public int getarticlesize() {
+	public int getArticleSize() {
 	
-		return articledao.getarticlesize();
+		return articledao.getArticleSize();
 	}
 
-	public void List(int page) {
-		articledao.List(page);		
+	public List<Article> getList() {
+		return articledao.getList();		
 	}
 
 	public Article getarticleIndex(int i) {
-		return articledao.getarticleIndex(i);
+		return articledao.getArticleIndex(i);
 	}
 
 	public void delete(int inputid) {
@@ -43,6 +55,23 @@ public class ArticleService {
 	public void search(String inputbody, int page) {
 		articledao.search(inputbody, page);
 		
+	}
+
+	public int boardAdd(String boardName) {
+		
+		return articledao.boardAdd(boardName);
+		
+	}
+
+	public int getBoardSize() {
+		return articledao.getBoardSize();
+	
+	}
+
+	public Board getBoardId(int input) {
+		
+		return articledao.getBoardId(input);
+				
 	}
 	
 	

@@ -1,6 +1,10 @@
 package com.sbs.example.easytextboard.controller;
 
 
-public class Controller {
+public abstract class Controller {
+
+	public abstract void doCommand(String cmd);
 
 }
+
+	

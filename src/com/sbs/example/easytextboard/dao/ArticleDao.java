@@ -4,61 +4,50 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import com.sbs.example.easytextboard.container.Container;
 import com.sbs.example.easytextboard.dto.Article;
+import com.sbs.example.easytextboard.dto.Board;
 
 public class ArticleDao {
-
+	private List<Board> boards;
 	private List<Article> articles;
+	private int lastBoard;
 
 	private int lastid;
 
 	public ArticleDao() {
 		articles = new ArrayList<Article>();
+		boards = new ArrayList<>();
 		lastid = 0;
+		lastBoard = 0;
 
-		for (int i = 0; i < 32; i++) {
-			add("제목" + (i + 1), "내용" + (i + 1), i % 2 == 0 ? Container.memberdao.getmembers().get(0).id : Container.memberdao.getmembers().get(1).id);
+		int j = boardAdd("공지사항");
 
+		for (int i = 0; i < 5; i++) {
+			add("제목" + (i + 1), "내용" + (i + 1), 1 + "", j);
 		}
-		
+		for (int i = 5; i < 10; i++) {
+			add("제목" + (i + 1), "내용" + (i + 1), 2 + "", j);
+		}
+
 	}
 
-	public int add(String title, String body, String memberid) {
+	public int add(String title, String body, String memberId, int boardId) {
 
 		Article article = new Article();
 
 		article.id = lastid + 1;
 		article.title = title;
 		article.body = body;
-		article.memberId = memberid;
+		article.memberId = memberId;
+		article.boardId = boardId;
 
 		articles.add(article);
 		lastid = article.id;
 		return article.id;
 	}
 
-	public void List(int page) {
-		if (page <= 1) {
-			page = 1;
-		}
-		int term = 10;
-		int start = articles.size() - 1;
-
-		if (page > start / 10 +1) {
-			System.out.printf("%d페이지는 존재하지 않습니다.\n", page);
-			return;
-		}
-		start -= (page - 1) * term;
-		int end = start - (term - 1);
-
-		if (end <= 0) {
-			end = 0;
-		}
-
-		for (int i = start; i >= end; i--) {
-			System.out.printf("%d / %s / %s\n", articles.get(i).id, articles.get(i).title,articles.get(i).memberId);
-		}
+	public List<Article> getList() {
+		return articles;
 	}
 
 	public void delete(int input) {
@@ -93,6 +82,7 @@ public class ArticleDao {
 		article.body = body;
 		articles.set(input - 1, article);
 		System.out.printf("%d번 글이 변경되었습니다.\n", input);
+		scan.close();
 
 	}
 
@@ -127,21 +117,44 @@ public class ArticleDao {
 		}
 	}
 
-	public int getlastid() {
+	public int getLastId() {
 		return lastid;
 	}
 
-	public List<Article> getarticles() {
+	public List<Article> getArticles() {
 		return articles;
 	}
 
-	public int getarticlesize() {
+	public int getArticleSize() {
 		return articles.size();
 	}
 
-	public Article getarticleIndex(int i) {
+	public Article getArticleIndex(int i) {
 		return articles.get(i);
 	}
 
-	
+	public int boardAdd(String boardName) {
+		Board board = new Board();
+		board.boardId = lastBoard + 1;
+		board.boardName = boardName;
+		lastBoard = board.boardId;
+		boards.add(board);
+		return board.boardId;
+
+	}
+
+	public int getBoardSize() {
+
+		return boards.size();
+	}
+
+	public Board getBoardId(int input) {
+		for (Board board : boards) {
+			if (board.boardId == input) {
+				return board;
+			}
+		}
+		return null;
+	}
+
 }
